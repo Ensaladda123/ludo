@@ -1,50 +1,78 @@
-const canvas = document.getElementById("matrix");
-const ctx = canvas.getContext("2d");
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!? ";
-const fontSize = 12; // Reducido para más letras
-const columns = Math.floor(canvas.width / fontSize);
-const drops = Array(columns).fill(0);
-
-// Mensaje que se va a formar
-const mensaje = "JUGAMOS UN LUDO?";
-const mensajeColumnas = Math.floor((canvas.width / fontSize - mensaje.length) / 2);
-
-// Bandera para controlar el cambio de efecto
-let mostrarMensaje = false;
-
-function drawMatrix() {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    ctx.fillStyle = "#00FF00";
-    ctx.font = `${fontSize}px monospace`;
-
-    for (let i = 0; i < drops.length; i++) {
-        if (mostrarMensaje && i >= mensajeColumnas && i < mensajeColumnas + mensaje.length) {
-            const index = i - mensajeColumnas;
-            ctx.fillText(mensaje[index], i * fontSize, canvas.height / 2);
-        } else {
-            if (Math.random() > 0.5) { // Más letras apareciendo
-                const text = letters[Math.floor(Math.random() * letters.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                drops[i] += Math.random() > 0.5 ? 3 : 2; // Algunas columnas van más rápido
-            }
-
-            if (drops[i] * fontSize > canvas.height) {
-                drops[i] = 0;
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Effect</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: black;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #matrix {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix"></canvas>
+    <script>
+        const canvas = document.getElementById("matrix");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!? ";
+        const fontSize = 18;
+        const columns = Math.floor(canvas.width / fontSize);
+        const drops = Array(columns).fill(0);
+        // Mensaje que se va a formar
+        const mensaje = "JUGAMOS UN LUDO?";
+        const mensajeColumnas = Math.floor((canvas.width / fontSize - mensaje.length) / 2);
+        // Bandera para controlar el cambio de efecto
+        let mostrarMensaje = false;
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#00FF00";
+            ctx.font = `${fontSize}px monospace`;
+            for (let i = 0; i < drops.length; i++) {
+                if (mostrarMensaje && i >= mensajeColumnas && i < mensajeColumnas + mensaje.length) {
+                    // Si estamos en la zona del mensaje, alineamos las letras
+                    const index = i - mensajeColumnas;
+                    ctx.fillText(mensaje[index], i * fontSize, canvas.height / 2);
+                } else {
+                    // Letras normales cayendo
+                    if (Math.random() > 0.9) {
+                        const text = letters[Math.floor(Math.random() * letters.length)];
+                        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                        drops[i] += 2;
+                    }
+                    // Reiniciar la caída si llega al final de la pantalla
+                    if (drops[i] * fontSize > canvas.height) {
+                        drops[i] = 0;
+                    }
+                }
             }
         }
-    }
-}
-
-// Iniciar animación Matrix
-let interval = setInterval(drawMatrix, 30);
-
-// A los 5 segundos, formar el mensaje
-setTimeout(() => {
-    mostrarMensaje = true;
-}, 5000);
+        // Iniciar animación Matrix
+        let interval = setInterval(drawMatrix, 30);
+        // A los 5 segundos, formar el mensaje
+        setTimeout(() => {
+            mostrarMensaje = true;
+        }, 5000);
+    </script>
+</body>
+</html>
