@@ -69,7 +69,6 @@
                         ctx.fillText(text, i * fontSize, drops[i] * fontSize);
                         drops[i] += 2;
                     }
-
                     // Reiniciar la caída si llega al final de la pantalla
                     if (drops[i] * fontSize > canvas.height) {
                         drops[i] = 0;
@@ -77,10 +76,8 @@
                 }
             }
         }
-
         // Iniciar animación Matrix
         let interval = setInterval(drawMatrix, 30);
-
         // A los 5 segundos, formar el mensaje
         setTimeout(() => {
             mostrarMensaje = true;
