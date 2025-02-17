@@ -64,7 +64,7 @@
                     ctx.fillText(mensaje[index], i * fontSize, canvas.height / 2);
                 } else {
                     // Letras normales cayendo
-                    if (Math.random() > 0.9) {
+                    if (Math.random() > 0.6) {
                         const text = letters[Math.floor(Math.random() * letters.length)];
                         ctx.fillText(text, i * fontSize, drops[i] * fontSize);
                         drops[i] += 3;
