@@ -18,56 +18,33 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            position: relative;
         }
 
         #matrix {
             position: absolute;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
-            display: block;
-        }
-
-        #mensaje {
-            position: absolute;
-            color: #00FF00;
-            font-size: 36px;
-            font-family: monospace;
-            text-align: center;
             width: 100%;
-            opacity: 0;
-            transition: opacity 2s ease-in-out;
+            height: 100%;
         }
     </style>
 </head>
 <body>
     <canvas id="matrix"></canvas>
-    <div id="mensaje">JUGAMOS UN LUDO?</div>
-
     <script>
         const canvas = document.getElementById("matrix");
         const ctx = canvas.getContext("2d");
-        const mensaje = document.getElementById("mensaje");
 
-        function ajustarTamanio() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            mensaje.style.top = `${canvas.height / 2 - 20}px`;
-        }
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-        window.addEventListener("resize", ajustarTamanio);
-        ajustarTamanio();
-
-        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!? ";
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!?";
         const fontSize = 18;
         const columns = Math.floor(canvas.width / fontSize);
         const drops = Array(columns).fill(0);
 
         function drawMatrix() {
-            // Ajustamos la opacidad del fondo para mejorar el rastro del efecto
-            ctx.fillStyle = "rgba(0, 0, 0, 0.1)";  // Cuanto menor el último número, más persistente es el rastro
+            ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             ctx.fillStyle = "#00FF00";
@@ -76,23 +53,15 @@
             for (let i = 0; i < drops.length; i++) {
                 const text = letters[Math.floor(Math.random() * letters.length)];
                 ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                if (Math.random() > 0.5) {
-                    drops[i]++;
-                }
-
-                if (drops[i] * fontSize > canvas.height) {
+                drops[i]++;
+                
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
                     drops[i] = 0;
                 }
             }
         }
 
-        let interval = setInterval(drawMatrix, 35); // Ajustamos la velocidad de actualización
-
-        // A los 5 segundos, mostrar el mensaje
-        setTimeout(() => {
-            mensaje.style.opacity = "1";
-        }, 5000);
+        setInterval(drawMatrix, 30);
     </script>
 </body>
 </html>
