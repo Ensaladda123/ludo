@@ -25,8 +25,9 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
+            display: block;
         }
 
         #mensaje {
@@ -35,6 +36,7 @@
             font-size: 36px;
             font-family: monospace;
             text-align: center;
+            width: 100%;
             opacity: 0;
             transition: opacity 2s ease-in-out;
         }
@@ -49,11 +51,14 @@
         const ctx = canvas.getContext("2d");
         const mensaje = document.getElementById("mensaje");
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        function ajustarTamanio() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            mensaje.style.top = `${canvas.height / 2 - 20}px`;
+        }
 
-        mensaje.style.top = `${canvas.height / 2 - 20}px`; 
-        mensaje.style.left = `${canvas.width / 2 - (mensaje.offsetWidth / 2)}px`;
+        window.addEventListener("resize", ajustarTamanio);
+        ajustarTamanio();
 
         const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!? ";
         const fontSize = 18;
@@ -61,17 +66,18 @@
         const drops = Array(columns).fill(0);
 
         function drawMatrix() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+            ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             ctx.fillStyle = "#00FF00";
             ctx.font = `${fontSize}px monospace`;
 
             for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
                 if (Math.random() > 0.6) {
-                    const text = letters[Math.floor(Math.random() * letters.length)];
-                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                    drops[i] += 3;
+                    drops[i]++;
                 }
 
                 if (drops[i] * fontSize > canvas.height) {
