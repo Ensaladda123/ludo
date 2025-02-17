@@ -51,7 +51,7 @@
         let mostrarMensaje = false;
 
         function drawMatrix() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+            ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             ctx.fillStyle = "#00FF00";
@@ -67,7 +67,7 @@
                     if (Math.random() > 0.6) {
                         const text = letters[Math.floor(Math.random() * letters.length)];
                         ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                        drops[i] += 3;
+                        drops[i] += 2;
                     }
 
                     // Reiniciar la caída si llega al final de la pantalla
