@@ -3,65 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matrix Effect</title>
+    <title>Matrix Effect Video</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: black;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        #matrix {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
+        body { margin: 0; overflow: hidden; background: black; }
+        canvas { display: block; }
     </style>
 </head>
 <body>
-    <canvas id="matrix"></canvas>
     <script>
-        const canvas = document.getElementById("matrix");
-        const ctx = canvas.getContext("2d");
+        let columns = [];
+        let fontSize = 18;
+        let numColumns;
+        let frameCounter = 0;
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!?";
-        const fontSize = 18;
-        const columns = Math.floor(canvas.width / fontSize);
-        const drops = Array(columns).fill(0);
-
-        function drawMatrix() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = "#00FF00";
-            ctx.font = `${fontSize}px monospace`;
-
-            for (let i = 0; i < drops.length; i++) {
-                const text = letters[Math.floor(Math.random() * letters.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                drops[i]++;
-                
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
+        function setup() {
+            createCanvas(1920, 1080);  // Resolución Full HD
+            numColumns = width / fontSize;
+            for (let i = 0; i < numColumns; i++) {
+                columns[i] = new Column(i * fontSize);
             }
         }
 
-        setInterval(drawMatrix, 30);
+        function draw() {
+            background(0, 150); // Desvanecimiento suave
+            for (let col of columns) {
+                col.update();
+                col.show();
+            }
+
+            // Guardar los frames como imágenes
+            if (frameCounter < 300) {  // Guardar 300 frames (10 segundos a 30 FPS)
+                saveCanvas(`frame_${nf(frameCounter, 3)}`, 'png');
+                frameCounter++;
+            } else {
+                noLoop(); // Detener la animación después de generar los frames
+            }
+        }
+
+        class Column {
+            constructor(x) {
+                this.x = x;
+                this.y = random(-500, 0);
+                this.speed = random(2, 6);
+                this.text = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!?".split("");
+            }
+
+            update() {
+                this.y += this.speed;
+                if (this.y > height) this.y = random(-500, 0);
+            }
+
+            show() {
+                fill(0, 255, 0);
+                textSize(fontSize);
+                text(this.text[int(random(this.text.length))], this.x, this.y);
+            }
+        }
     </script>
 </body>
 </html>
