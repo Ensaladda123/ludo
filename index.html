@@ -48,33 +48,35 @@
 
         const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!? ";
         const layers = [
-            { fontSize: 10, speed: 1, opacity: 0.3 },
-            { fontSize: 14, speed: 1.5, opacity: 0.5 },
-            { fontSize: 18, speed: 2, opacity: 0.7 },
-            { fontSize: 22, speed: 2.5, opacity: 1 }
+            { fontSize: 26, speed: 1.5, opacity: 0.3 },
+            { fontSize: 20, speed: 1, opacity: 0.5 },
+            { fontSize: 14, speed: 0.7, opacity: 0.7 }
         ];
 
-        const dropsArray = layers.map(layer => Array(Math.floor(canvas.width / layer.fontSize)).fill(0));
+        const matrixLayers = layers.map(layer => {
+            const columns = Math.floor(canvas.width / layer.fontSize);
+            return {
+                fontSize: layer.fontSize,
+                speed: layer.speed,
+                opacity: layer.opacity,
+                drops: Array(columns).fill(0)
+            };
+        });
 
         function drawMatrix() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+            ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            layers.forEach((layer, index) => {
+            matrixLayers.forEach(layer => {
                 ctx.fillStyle = `rgba(0, 255, 0, ${layer.opacity})`;
                 ctx.font = `${layer.fontSize}px monospace`;
 
-                const drops = dropsArray[index];
-                for (let i = 0; i < drops.length; i++) {
+                for (let i = 0; i < layer.drops.length; i++) {
                     const text = letters[Math.floor(Math.random() * letters.length)];
-                    ctx.fillText(text, i * layer.fontSize, drops[i] * layer.fontSize);
-                    
-                    if (Math.random() > 0.5) {
-                        drops[i] += layer.speed;
-                    }
-
-                    if (drops[i] * layer.fontSize > canvas.height) {
-                        drops[i] = 0;
+                    ctx.fillText(text, i * layer.fontSize, layer.drops[i] * layer.fontSize);
+                    layer.drops[i] += layer.speed;
+                    if (layer.drops[i] * layer.fontSize > canvas.height && Math.random() > 0.975) {
+                        layer.drops[i] = 0;
                     }
                 }
             });
